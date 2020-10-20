@@ -1,0 +1,27 @@
+#Lavnish Singh Bisht
+#data exploration of cluster
+str(iris)
+library(ggplot2)
+library(caret)
+featurePlot(iris[,1:4], iris[,5], plot = "box")
+ggplot(iris,aes(y=iris$Petal.Length,x=iris$Species, fill=iris$Species))+ geom_violin()
+#we can see petal length clearly divides all the species
+ggplot()+geom_point(aes(iris$Sepal.Length,iris$Petal.Length, colour=iris$Species))
+#removing the dependent variable
+dataset= iris[,-5]
+#finding the optimal no. of clusters using elbow method
+wcss = vector()
+for (i in 1:10) 
+{wcss[i] = sum(kmeans(dataset, i)$withinss)}
+plot(1:10,
+     wcss,
+     type = 'b',
+     main = paste('The Elbow Method'),
+     xlab = 'Number of clusters',
+     ylab = 'WCSS')
+#optimal no. of clusters comes out to be 3
+classification =kmeans(dataset, centers = 3)
+y_kmeans= classification$cluster
+#visual representatin
+library(cluster)
+clusplot(dataset, y_kmeans, color = TRUE, shade =TRUE, lines = 0,labels = 2)
