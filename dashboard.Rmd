@@ -1,0 +1,150 @@
+---
+title: "Super Store Analysis"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
+    social: ["twitter","facebook","menu"]
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(ggplot2)
+library(caret)
+library(dplyr)
+library(skimr)
+library(readxl)
+```
+
+```{r}
+store <- read_xlsx("SampleSuperstore.xlsx")
+store[,1:9]=lapply(store[,1:9], factor)
+skim(store)
+store$ship=store$`Ship Mode`
+```
+Exploratory Data Visualization All
+=====================================
+Row
+-----------------------------------------------------------------------
+
+### All Features
+
+```{r}
+
+pairs(store ,panel = panel.smooth)
+```
+
+Exploratory Data Visualization 1a
+====================================================
+Row 
+-----------------------------------------------------------------------
+
+### Shiping Modde vs Profit
+
+```{r}
+store=store %>% group_by(ship) %>% mutate(nship=n()/nrow(store))
+ggplot(store,aes(y=store$Profit,x=store$`Ship Mode`, fill=store$`Ship Mode`))+geom_violin(aes(weight=nship ))
+```
+
+### Segment vs Profit
+
+```{r}
+store=store %>% group_by(Segment) %>% mutate(nseg=n()/nrow(store))
+ggplot(store,aes(y=store$Profit,x=store$Segment,fill=store$Segment))+geom_violin(aes(weight=nseg ))
+```
+
+Exploratory Data Visualization 1b
+====================================================
+
+### Region vs Profit
+```{r}
+store=store %>% group_by(Region) %>% mutate(nreg=n()/nrow(store))
+ggplot(store,aes(y=store$Profit,x=store$Region,fill=store$Region))+geom_violin(aes(weight=nreg ))
+```
+
+### Category vs Profit
+```{r}
+store=store %>% group_by(Category) %>% mutate(ncat=n()/nrow(store))
+ggplot(store,aes(y=store$Profit,x=store$Category,fill=store$Category))+geom_violin(aes(weight=ncat ))
+```
+
+EDV 2
+=======================================================
+
+Column {data-width=2000}
+------------------------------------------------------------------------------------------
+### State vs Profit
+```{r}
+ggplot(store,aes(y=store$Profit,x=store$State))+geom_jitter(aes(col=State ))
+```
+
+### Sub category vs Profit
+```{r}
+ggplot(store,aes(y=store$Profit,x=store$`Sub-Category`))+geom_jitter(aes(col=store$`Sub-Category` ))
+```
+
+EDV 3
+=======================================
+
+Row
+------------------------------------
+### Sales vs Profit
+```{r}
+ggplot(store,aes(y=store$Profit,x=store$Sales))+geom_jitter(aes(col=store$Sales ))
+```
+
+### Discount vs Profit
+```{r}
+ggplot(store,aes(y=store$Profit,x=store$Discount))+geom_jitter(aes(col=store$Discount ))
+
+```
+
+
+### Quantity vs Profit
+```{r}
+ggplot(store,aes(y=store$Profit,x=store$Quantity))+geom_jitter(aes(col=store$Quantity ))
+
+```
+
+EDV 4a
+=======================================
+
+### Quantity vs Sales
+```{r}
+ggplot(store,aes(y=store$Sales,x=store$Quantity))+geom_jitter(aes(col=store$Quantity ))
+
+```
+
+###  Discount vs Sales
+```{r}
+ggplot(store,aes(y=store$Sales,x=store$Discount))+geom_jitter(aes(col=store$Prof ))
+
+```
+
+EDV 4b
+=======================================
+### Category vs Sales
+```{r}
+ggplot(store,aes(y=store$Sales,x=store$Category))+geom_jitter(aes(col=store$Profit ))
+
+```
+
+### Sub-Category vs Sales
+```{r}
+ggplot(store,aes(y=store$Sales,x=store$`Sub-Category`))+geom_jitter(aes(col=store$`Sub-Category` ))
+
+```
+
+EDV 5
+=======================================
+### Category vs Quantity
+```{r}
+ggplot(store,aes(y=store$Quantity,x=store$Category))+geom_jitter(aes(col=store$Profit ))
+
+```
+
+### SUb-Category vs Quantity
+```{r}
+ggplot(store,aes(y=store$Quantity,x=store$`Sub-Category`))+geom_jitter(aes(col=store$`Sub-Category` ))
+
+```
