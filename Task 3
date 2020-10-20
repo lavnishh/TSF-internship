@@ -1,0 +1,27 @@
+#Lavnish Singh Bisht
+library(caret)
+library(ggplot2)
+str(iris)
+featurePlot(iris[,1:4],iris[,5],plot="box")
+
+#encoding target features as factor
+iris$Species= factor(iris$Species, levels = c("setosa","versicolor","virginica"),
+                     labels = c(0,1,2))
+#Data Partition
+id= createDataPartition(iris$Species, p=.8, list = FALSE)
+id=as.vector(id)
+training= iris[id,]
+test= iris[-id,]
+
+#creating decision tree model
+library(rpart)
+model= rpart(training$Species~., data = training)
+y_pred= predict(model, test[,-5], type = "class")
+
+#accuracy testing by confusion matrix
+table(y_pred, test$Species)
+# from confusion matrix accuracy=.967
+
+#visualisation
+library(rattle)
+fancyRpartPlot(model)
